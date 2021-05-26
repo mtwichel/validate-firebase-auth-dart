@@ -1,7 +1,8 @@
 name: validate_firebase_auth.yaml
 
 on:
- pull_request:
+  push:
+  pull_request:
    
 jobs:
   build:
