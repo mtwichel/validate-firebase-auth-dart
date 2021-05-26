@@ -1,6 +1,6 @@
 # validate_firebase_auth
 
-[![Pub](https://img.shields.io/pub/v/validate-firebase-auth.svg)](https://pub.dev/packages/validate-firebase-auth)
+[![Pub](https://img.shields.io/pub/v/validate_firebase_auth.svg)](https://pub.dev/packages/validate_firebase_auth)
 [![build](https://github.com/mtwichel/validate-firebase-auth-dart/workflows/validate_firebase_auth/badge.svg)](https://github.com/mtwichel/validate-firebase-auth-dart/actions)
 [![coverage](https://raw.githubusercontent.com/mtwichel/validate-firebase-auth-dart/main/coverage_badge.svg)](https://github.com/mtwichel/validate-firebase-auth-dart/actions)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
