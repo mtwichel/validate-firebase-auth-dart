@@ -1,5 +1,6 @@
 import 'package:functions_framework/functions_framework.dart';
 import 'package:shelf/shelf.dart';
+import 'package:validate_firebase_auth/validate_firebase_auth.dart';
 
 @CloudFunction()
 Future<Response> function(Request request) async {
@@ -18,7 +19,9 @@ Future<Response> function(Request request) async {
   final validator = FirebaseAuthValidator();
   await validator.init();
 
-  final token = validator.validate(jwt);
+  final token = await validator.validate(jwt);
 
-  return Response.ok(token.isVerified ? 'Token is valid' : 'Token not valid');
+  return Response.ok(
+    token.isVerified ?? false ? 'Token is valid' : 'Token not valid',
+  );
 }
