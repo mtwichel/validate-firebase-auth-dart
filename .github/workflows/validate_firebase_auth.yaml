@@ -1,7 +1,7 @@
 name: validate_firebase_auth.yaml
 
 on:
-  pull_request:
+ pull_request:
    
 jobs:
   build:
@@ -9,7 +9,6 @@ jobs:
     container:
       image: google/dart:2.12
     steps:
-     steps:
       - uses: actions/checkout@v2
 
       - name: Install Dependencies
