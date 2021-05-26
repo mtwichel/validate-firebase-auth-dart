@@ -1,4 +1,4 @@
-name: validate_firebase_auth.yaml
+name: validate_firebase_auth
 
 on:
   push:
