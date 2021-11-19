@@ -41,7 +41,7 @@ class MockIdToken extends Mock implements IdToken { }
 
 void main() {
   late FirebaseAuthValidator validator;
-  late IdToken token;
+  late idToken token;
 
   setUp(() {
     validator = MockFirebaseAuthValidator();

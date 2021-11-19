@@ -8,7 +8,7 @@ environment:
 
 dependencies:
   very_good_analysis: ^2.0.0
-  openid_client: ^0.4.1
+  openid_client: ^0.4.3
   http: ^0.13.3
   meta: ^1.4.0
 
