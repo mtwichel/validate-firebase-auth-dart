@@ -72,7 +72,7 @@ class FirebaseAuthValidator {
           );
       final issuer =
           await Issuer.discover(Issuer.firebase(calculatedProjectId));
-      client = Client(issuer, projectId);
+      client = Client(issuer, calculatedProjectId);
     }
   }
 
