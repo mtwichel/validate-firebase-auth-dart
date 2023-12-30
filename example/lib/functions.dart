@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:functions_framework/functions_framework.dart';
 import 'package:shelf/shelf.dart';
 import 'package:validate_firebase_auth/validate_firebase_auth.dart';

@@ -1,0 +1,18 @@
+{
+  "version": "0.2",
+  "ignorePaths": [
+    "example/**",
+    ".gitignore"
+  ],
+  "dictionaryDefinitions": [],
+  "dictionaries": [],
+  "words": [
+    "mocktail",
+    "writeln",
+    "endtemplate",
+    "GCLOUD",
+    "CLOUDSDK"
+  ],
+  "ignoreWords": [],
+  "import": []
+}

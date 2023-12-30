@@ -1,9 +1,8 @@
 import 'dart:io';
 
-import 'package:http/io_client.dart';
+import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:openid_client/openid_client.dart';
-import 'package:http/http.dart' as http;
 
 /// {@template firebase_auth_validator}
 /// An object to validate JWTs from Firebase Auth.
@@ -26,22 +25,16 @@ class FirebaseAuthValidator {
   /// {macro firebase_auth_emulator}
   FirebaseAuthValidator({
     PlatformWrapper? platformWrapper,
-    http.Client? httpClient,
-    Client? seededClient,
-  })  : _seededClient = seededClient,
+    @visibleForTesting http.Client? httpClient,
+    @visibleForTesting Client? openIdClient,
+  })  : _openIdClient = openIdClient,
         _platformWrapper = platformWrapper ?? PlatformWrapper(),
-        _httpClient = httpClient ?? IOClient();
+        _httpClient = httpClient ?? http.Client();
 
   final PlatformWrapper _platformWrapper;
   final http.Client _httpClient;
 
-  /// ONLY INTENDED FOR INTERNAL USE, MADE PUBLIC FOR TESTING
-  ///
-  /// The OpenId client for validating tokens.
-  @visibleForTesting
-  Client? client;
-
-  final Client? _seededClient;
+  Client? _openIdClient;
 
   /// Initializes authenticator and sets the project id.
   /// Must be called before `validate` is called.
@@ -62,9 +55,7 @@ class FirebaseAuthValidator {
   /// // ready to call validator.validate(token)
   /// ```
   Future<void> init({String? projectId}) async {
-    if (_seededClient != null) {
-      client = _seededClient;
-    } else {
+    if (_openIdClient == null) {
       final calculatedProjectId = projectId ??
           await currentProjectId(
             platformWrapper: _platformWrapper,
@@ -72,7 +63,7 @@ class FirebaseAuthValidator {
           );
       final issuer =
           await Issuer.discover(Issuer.firebase(calculatedProjectId));
-      client = Client(issuer, calculatedProjectId);
+      _openIdClient = Client(issuer, calculatedProjectId);
     }
   }
 
@@ -91,10 +82,9 @@ class FirebaseAuthValidator {
   Future<IdToken> validate(
     String token,
   ) async {
-    assert(client != null);
-    final credential = client!.createCredential(idToken: token);
+    final credential = _openIdClient!.createCredential(idToken: token);
 
-    await for (var e in credential.validateToken()) {
+    await for (final e in credential.validateToken()) {
       throw Exception('Validating ID token failed: $e');
     }
 
@@ -118,7 +108,7 @@ Future<String> currentProjectId({
   required PlatformWrapper platformWrapper,
   required http.Client httpClient,
 }) async {
-  for (var envKey in _gcpProjectIdEnvironmentVariables) {
+  for (final envKey in _gcpProjectIdEnvironmentVariables) {
     final value = platformWrapper.environment[envKey];
     if (value != null) return value;
   }
@@ -167,7 +157,7 @@ final _gcpProjectIdEnvironmentVariables = {
 class PlatformWrapper {
   /// ONLY INTENDED FOR INTERNAL USE, MADE PUBLIC FOR TESTING
   ///
-  /// Wraps static Platform.envirnoment for testing
+  /// Wraps static Platform.environment for testing
   @visibleForTesting
   Map<String, String> get environment => Platform.environment;
 }

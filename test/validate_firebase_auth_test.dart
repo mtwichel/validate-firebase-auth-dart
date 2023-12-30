@@ -1,11 +1,9 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:io';
 
+import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
 import 'package:openid_client/openid_client_io.dart';
 import 'package:test/test.dart';
-import 'package:http/http.dart' as http;
 import 'package:validate_firebase_auth/src/validate_firebase_auth.dart';
 
 class MockPlatformWrapper extends Mock implements PlatformWrapper {}
@@ -63,16 +61,9 @@ void main() {
   });
   group('FirebaseAuthValidator', () {
     group('validate', () {
-      test('throws assertion error if client is null', () async {
-        await expectLater(
-          () async => await FirebaseAuthValidator().validate('token'),
-          throwsA(isA<AssertionError>()),
-        );
-      });
-
       test('calls validate token', () async {
         final validator = FirebaseAuthValidator(
-          seededClient: client,
+          openIdClient: client,
         );
         await validator.init();
         await validator.validate('token');
@@ -87,11 +78,11 @@ void main() {
         );
 
         final validator = FirebaseAuthValidator(
-          seededClient: client,
+          openIdClient: client,
         );
         await validator.init();
         await expectLater(
-          () async => await validator.validate('token'),
+          () => validator.validate('token'),
           throwsException,
         );
       });
@@ -99,11 +90,11 @@ void main() {
       test('throws exception when uid is not valid', () async {
         when(() => claims.subject).thenReturn('');
         final validator = FirebaseAuthValidator(
-          seededClient: client,
+          openIdClient: client,
         );
         await validator.init();
         await expectLater(
-          () async => await validator.validate('token'),
+          () => validator.validate('token'),
           throwsException,
         );
       });
@@ -113,27 +104,19 @@ void main() {
         final validator = FirebaseAuthValidator(
           platformWrapper: platformWrapper,
         );
-        expect(validator.client, isNull);
-        await validator.init();
-        expect(validator.client, isNotNull);
-      });
-      test('sets client if provided', () async {
-        final validator = FirebaseAuthValidator(seededClient: MockClient());
-        expect(validator.client, isNull);
-        await validator.init();
-        expect(validator.client, isNotNull);
+        expect(validator.init(), completes);
       });
     });
 
     group('currentProjectId', () {
-      test('returns corectly when an environment variable is set', () async {
+      test('returns correctly when an environment variable is set', () async {
         final projId = await currentProjectId(
           platformWrapper: platformWrapper,
           httpClient: httpClient,
         );
         expect(projId, 'test-project-id');
       });
-      test('returns corectly when an environment variable is not set',
+      test('returns correctly when an environment variable is not set',
           () async {
         final response = MockHttpResponse();
         when(() => response.statusCode).thenReturn(200);
@@ -160,7 +143,7 @@ void main() {
             .thenAnswer((_) async => response);
 
         await expectLater(
-          () async => await currentProjectId(
+          () => currentProjectId(
             platformWrapper: platformWrapper,
             httpClient: httpClient,
           ),
@@ -171,10 +154,10 @@ void main() {
           () async {
         when(() => platformWrapper.environment).thenReturn({});
         when(() => httpClient.get(any(), headers: any(named: 'headers')))
-            .thenThrow(SocketException('oops'));
+            .thenThrow(const SocketException('oops'));
 
         await expectLater(
-          () async => await currentProjectId(
+          () => currentProjectId(
             platformWrapper: platformWrapper,
             httpClient: httpClient,
           ),
@@ -185,7 +168,7 @@ void main() {
   });
 
   group('PlatformWrapper', () {
-    test('enviornment returns environment', () {
+    test('environment returns environment', () {
       expect(PlatformWrapper().environment, isNotNull);
     });
   });
