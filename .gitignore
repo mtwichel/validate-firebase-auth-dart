@@ -33,6 +33,7 @@ coverage/
 pubspec.lock
 mason-lock.json
 .mason
+.metadata
 
 # Android related
 **/android/**/gradle-wrapper.jar

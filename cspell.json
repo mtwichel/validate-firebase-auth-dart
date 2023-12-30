@@ -1,9 +1,13 @@
 {
   "version": "0.2",
-  "ignorePaths": [],
+  "ignorePaths": [
+    "example/**"
+  ],
   "dictionaryDefinitions": [],
   "dictionaries": [],
-  "words": [],
+  "words": [
+    "mocktail"
+  ],
   "ignoreWords": [],
   "import": []
 }
